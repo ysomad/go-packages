@@ -2,7 +2,6 @@ package pgx
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -41,7 +40,7 @@ func NewClient(connString string, opts ...Option) (*Client, error) {
 
 	poolConfig, err := pgxpool.ParseConfig(connString)
 	if err != nil {
-		return nil, fmt.Errorf("postgres - NewPostgres - pgxpool.ParseConfig: %w", err)
+		return nil, err
 	}
 
 	poolConfig.MaxConns = int32(c.maxPoolSize)
@@ -54,7 +53,7 @@ func NewClient(connString string, opts ...Option) (*Client, error) {
 		}
 		defer c.Close()
 
-		log.Printf("Postgres is trying to connect, attempts left: %d", c.connAttempts)
+		log.Printf("trying connecting to postgres, attempts left: %d", c.connAttempts)
 
 		time.Sleep(c.connTimeout)
 
@@ -62,7 +61,7 @@ func NewClient(connString string, opts ...Option) (*Client, error) {
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("postgres - NewClient - connAttempts == 0: %w", err)
+		return nil, err
 	}
 
 	c.Builder = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)

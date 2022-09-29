@@ -3,7 +3,6 @@ package validate
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"reflect"
 	"strings"
@@ -39,7 +38,7 @@ func New() (*validate, error) {
 	})
 
 	if err := enTranslations.RegisterDefaultTranslations(v, t); err != nil {
-		return nil, fmt.Errorf("enTranslations.RegisterDefaultTranslations: %w", err)
+		return nil, err
 	}
 
 	return &validate{v: v, trans: t}, nil
