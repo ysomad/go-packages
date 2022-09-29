@@ -2,8 +2,6 @@ package sort
 
 import (
 	"strings"
-
-	sq "github.com/Masterminds/squirrel"
 )
 
 type Sort struct {
@@ -23,7 +21,7 @@ func New(column, order string) Sort {
 	}
 }
 
-// UseSelectBuilder adds sort to squirrel.SelectBuilder
-func (s Sort) UseSelectBuilder(b sq.SelectBuilder) sq.SelectBuilder {
-	return b.OrderBy(s.column + " " + s.order)
+// Expression returns OrderBy expression like `column DESC`.
+func (s Sort) Expression() string {
+	return s.column + " " + s.order
 }
