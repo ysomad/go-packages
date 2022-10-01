@@ -6,28 +6,28 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-// CursorUInt is data transfer object for cursor pagination using Serial PKs.
-type CursorUInt[T constraints.Unsigned] struct {
+// SeekUInt is data transfer object for seek pagination using Serial PKs.
+type SeekUInt[T constraints.Unsigned] struct {
 	Limit  uint16
 	LastID T
 }
 
-func NewCursorUInt[T constraints.Unsigned](lastID T, limit uint16) CursorUInt[T] {
-	return CursorUInt[T]{
+func NewSeekUInt[T constraints.Unsigned](lastID T, limit uint16) SeekUInt[T] {
+	return SeekUInt[T]{
 		Limit:  limit,
 		LastID: lastID,
 	}
 }
 
-// CursorString is data transfer object for cursor pagination using string as PKs, for example UUID.
-type CursorString struct {
+// SeekString is data transfer object for seek pagination using string as PKs, for example UUID.
+type SeekString struct {
 	LastCreatedAt time.Time
 	LastID        string
 	Limit         uint16
 }
 
-func NewCursorString(lastID string, lastCreatedAt time.Time, limit uint16) CursorString {
-	return CursorString{
+func NewSeekString(lastID string, lastCreatedAt time.Time, limit uint16) SeekString {
+	return SeekString{
 		LastCreatedAt: lastCreatedAt,
 		LastID:        lastID,
 		Limit:         limit,
