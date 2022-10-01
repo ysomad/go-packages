@@ -44,8 +44,8 @@ func New() (*validate, error) {
 	return &validate{v: v, trans: t}, nil
 }
 
-// TranslateError translates error into map of errors where key is field name and value is error.
-func (v *validate) TranslateError(err error) map[string]string {
+// Translate translates error into map of errors where key is field name and value is error.
+func (v *validate) Translate(err error) map[string]string {
 	errs := make(map[string]string)
 	for _, err := range err.(validator.ValidationErrors) {
 		errs[err.Field()] = err.Translate(v.trans)
@@ -58,9 +58,9 @@ func (v *validate) Struct(s any) error {
 	return v.v.Struct(s)
 }
 
-// Into decodes io.Reader impl to dest and validates it with Struct,
-// created for using mostly with http.Request.Body.
-func (v *validate) Into(r io.Reader, dest any) error {
+// DecodeInto decodes io.Reader impl to dest and validates it with Struct,
+// created for using mostly with http.Body, dest must be a pointer.
+func (v *validate) DecodeInto(r io.Reader, dest any) error {
 	if err := json.NewDecoder(r).Decode(dest); err != nil {
 		return err
 	}
