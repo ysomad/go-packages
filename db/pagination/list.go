@@ -13,10 +13,10 @@ type List[T any] struct {
 // last item will be removed from `List.Result`.
 // Whether there are more records in db will be determined by length of objList.
 func NewList[T any](objList []T, limit uint16) List[T] {
-	objLen := uint16(len(objList))
-	hasNext := objLen == limit+1
+	l := uint16(len(objList))
+	hasNext := l == limit+1
 	if hasNext {
-		objList = objList[:objLen-1]
+		objList = objList[:l-1]
 	}
 	return List[T]{
 		Result:  objList,
