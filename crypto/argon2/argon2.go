@@ -33,7 +33,7 @@ func New() *argon2ID {
 }
 
 // Encode encodes plain text to argon2 hash
-func (a argon2ID) Encode(plain string) (string, error) {
+func (a *argon2ID) Encode(plain string) (string, error) {
 	salt := make([]byte, a.saltLen)
 
 	_, err := rand.Read(salt)
@@ -55,7 +55,7 @@ func (a argon2ID) Encode(plain string) (string, error) {
 }
 
 // Compare compares plain text with hash and returns true, nil if it matches
-func (a argon2ID) Compare(plain, hash string) (bool, error) {
+func (a *argon2ID) Compare(plain, hash string) (bool, error) {
 	hashParts := strings.Split(hash, "$")
 
 	_, err := fmt.Sscanf(hashParts[3], "m=%d,t=%d,p=%d", &a.memory, &a.time, &a.threads)

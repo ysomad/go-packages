@@ -22,11 +22,12 @@ func NewClient(connString string, opts ...Option) (*Client, error) {
 	c := &Client{
 		maxOpenConns: defaultMaxOpenConns,
 	}
-	var err error
 
 	for _, opt := range opts {
 		opt(c)
 	}
+
+	var err error
 
 	c.DB, err = sqlx.Connect("pgx", connString)
 	if err != nil {
