@@ -21,9 +21,3 @@ func WithConnTimeout(timeout time.Duration) Option {
 		c.connTimeout = timeout
 	}
 }
-
-func WithPreferSimpleProtocol(prefer bool) Option {
-	return func(c *Client) {
-		c.preferSimpleProtocol = prefer
-	}
-}

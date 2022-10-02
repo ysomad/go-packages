@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const (
@@ -18,10 +18,9 @@ const (
 // Client is implementation of postgres client using pgx
 // and squirrel as query builder
 type Client struct {
-	maxConns             int32
-	connAttempts         uint8
-	connTimeout          time.Duration
-	preferSimpleProtocol bool
+	maxConns     int32
+	connAttempts uint8
+	connTimeout  time.Duration
 
 	Builder squirrel.StatementBuilderType
 	Pool    *pgxpool.Pool
@@ -44,10 +43,9 @@ func NewClient(connString string, opts ...Option) (*Client, error) {
 	}
 
 	poolConfig.MaxConns = c.maxConns
-	poolConfig.ConnConfig.PreferSimpleProtocol = c.preferSimpleProtocol
 
 	for c.connAttempts > 0 {
-		c.Pool, err = pgxpool.ConnectConfig(context.Background(), poolConfig)
+		c.Pool, err = pgxpool.NewWithConfig(context.Background(), poolConfig)
 		if err == nil {
 			break
 		}
