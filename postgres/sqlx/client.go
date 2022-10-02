@@ -6,9 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var (
-	defaultMaxOpenConns = 1
-)
+const defaultMaxOpenConns = 1
 
 // Client is implementation of postgres client using pgx as driver,
 // sqlx as implementation of database/sql and squirrel as query builder

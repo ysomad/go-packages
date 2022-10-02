@@ -4,26 +4,26 @@ import "time"
 
 type Option func(*Client)
 
-func MaxPoolSize(size int) Option {
+func WithMaxConns(conns int32) Option {
 	return func(c *Client) {
-		c.maxPoolSize = size
+		c.maxConns = conns
 	}
 }
 
-func ConnAttempts(attempts int) Option {
+func WithConnAttempts(attempts uint8) Option {
 	return func(c *Client) {
 		c.connAttempts = attempts
 	}
 }
 
-func ConnTimeout(timeout time.Duration) Option {
+func WithConnTimeout(timeout time.Duration) Option {
 	return func(c *Client) {
 		c.connTimeout = timeout
 	}
 }
 
-func PreferSimpleProtocol(p bool) Option {
+func WithPreferSimpleProtocol(prefer bool) Option {
 	return func(c *Client) {
-		c.preferSimpleProtocol = p
+		c.preferSimpleProtocol = prefer
 	}
 }

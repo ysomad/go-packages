@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	defaultMaxPoolSize  = 1
+	defaultMaxConns     = 1
 	defaultConnAttempts = 10
 	defaultConnTimeout  = time.Second
 )
@@ -18,8 +18,8 @@ const (
 // Client is implementation of postgres client using pgx
 // and squirrel as query builder
 type Client struct {
-	maxPoolSize          int
-	connAttempts         int
+	maxConns             int32
+	connAttempts         uint8
 	connTimeout          time.Duration
 	preferSimpleProtocol bool
 
@@ -29,7 +29,7 @@ type Client struct {
 
 func NewClient(connString string, opts ...Option) (*Client, error) {
 	c := &Client{
-		maxPoolSize:  defaultMaxPoolSize,
+		maxConns:     defaultMaxConns,
 		connAttempts: defaultConnAttempts,
 		connTimeout:  defaultConnTimeout,
 	}
@@ -43,7 +43,7 @@ func NewClient(connString string, opts ...Option) (*Client, error) {
 		return nil, err
 	}
 
-	poolConfig.MaxConns = int32(c.maxPoolSize)
+	poolConfig.MaxConns = c.maxConns
 	poolConfig.ConnConfig.PreferSimpleProtocol = c.preferSimpleProtocol
 
 	for c.connAttempts > 0 {
