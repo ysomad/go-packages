@@ -1,9 +1,8 @@
 package strings
 
 import (
+	"errors"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewUnique(t *testing.T) {
@@ -28,9 +27,13 @@ func TestNewUnique(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := NewUnique(tt.length)
-			assert.ErrorIs(t, err, tt.err)
-			assert.NoError(t, err)
-			assert.Equal(t, tt.length, uint(len(got)))
+
+			if !errors.Is(err, tt.err) {
+				t.Errorf("want err %v, got err %v", tt.err, err)
+			}
+			if uint(len(got)) != tt.length {
+				t.Errorf("want length %b, got length %b", tt.length, len(got))
+			}
 		})
 	}
 }
@@ -54,7 +57,10 @@ func TestNewSafe(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewSafe(tt.length)
-			assert.Equal(t, tt.length, uint(len(got)))
+
+			if uint(len(got)) != tt.length {
+				t.Errorf("want length %b, got length %b", tt.length, len(got))
+			}
 		})
 	}
 }
@@ -78,7 +84,10 @@ func TestNewRandom(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewRandom(tt.length)
-			assert.Equal(t, tt.length, uint(len(got)))
+
+			if uint(len(got)) != tt.length {
+				t.Errorf("want length %b, got length %b", tt.length, len(got))
+			}
 		})
 	}
 }
