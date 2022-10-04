@@ -1,92 +1,295 @@
+// Package strings provides functions for generating random strings using cryptographically
+// secure random number generator from `crypto/rand`.
 package strings
 
 import (
-	"errors"
+	"reflect"
 	"testing"
 )
 
-func TestNewUnique(t *testing.T) {
-	t.Parallel()
-
+func TestNewBase64(t *testing.T) {
+	type args struct {
+		n int
+	}
 	tests := []struct {
-		name   string
-		length uint
-		err    error
+		name    string
+		args    args
+		want    string
+		wantErr bool
 	}{
-		{
-			name:   "success",
-			length: 10,
-			err:    nil,
-		},
-		{
-			name:   "0 length",
-			length: 0,
-			err:    errZeroLength,
-		},
+		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewUnique(tt.length)
-
-			if !errors.Is(err, tt.err) {
-				t.Errorf("want err %v, got err %v", tt.err, err)
+			got, err := NewBase64(tt.args.n)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewBase64() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
-			if uint(len(got)) != tt.length {
-				t.Errorf("want length %b, got length %b", tt.length, len(got))
+			if got != tt.want {
+				t.Errorf("NewBase64() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestNewSafe(t *testing.T) {
-	t.Parallel()
-
+func TestNewWithCharset(t *testing.T) {
+	type args struct {
+		n  int
+		cs charset
+	}
 	tests := []struct {
-		name   string
-		length uint
+		name    string
+		args    args
+		want    string
+		wantErr bool
 	}{
-		{
-			name:   "success",
-			length: 35,
-		},
-		{
-			name:   "0 length",
-			length: 0,
-		},
+		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := NewSafe(tt.length)
-
-			if uint(len(got)) != tt.length {
-				t.Errorf("want length %b, got length %b", tt.length, len(got))
+			got, err := NewWithCharset(tt.args.n, tt.args.cs)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewWithCharset() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("NewWithCharset() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 func TestNewRandom(t *testing.T) {
-	t.Parallel()
-
+	type args struct {
+		n int
+	}
 	tests := []struct {
-		name   string
-		length uint
+		name    string
+		args    args
+		want    string
+		wantErr bool
 	}{
-		{
-			name:   "success",
-			length: 33,
-		},
-		{
-			name:   "0 length",
-			length: 0,
-		},
+		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := NewRandom(tt.length)
+			got, err := NewRandom(tt.args.n)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewRandom() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("NewRandom() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
 
-			if uint(len(got)) != tt.length {
-				t.Errorf("want length %b, got length %b", tt.length, len(got))
+func TestNewWithAlphabetLower(t *testing.T) {
+	type args struct {
+		n int
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewWithAlphabetLower(tt.args.n)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewWithAlphabetLower() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("NewWithAlphabetLower() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewWithAlphabetUpper(t *testing.T) {
+	type args struct {
+		n int
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewWithAlphabetUpper(tt.args.n)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewWithAlphabetUpper() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("NewWithAlphabetUpper() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewWithAlphabet(t *testing.T) {
+	type args struct {
+		n int
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewWithAlphabet(tt.args.n)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewWithAlphabet() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("NewWithAlphabet() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewWithSpecials(t *testing.T) {
+	type args struct {
+		n int
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewWithSpecials(tt.args.n)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewWithSpecials() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("NewWithSpecials() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewWithAlphabetDigits(t *testing.T) {
+	type args struct {
+		n int
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewWithAlphabetDigits(tt.args.n)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewWithAlphabetDigits() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("NewWithAlphabetDigits() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewWithDigits(t *testing.T) {
+	type args struct {
+		n int
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewWithDigits(tt.args.n)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewWithDigits() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("NewWithDigits() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewWithCharsets(t *testing.T) {
+	type args struct {
+		n    int
+		sets []charset
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewWithCharsets(tt.args.n, tt.args.sets...)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewWithCharsets() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("NewWithCharsets() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_generateRandomBytes(t *testing.T) {
+	type args struct {
+		n int
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    []byte
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := generateRandomBytes(tt.args.n)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("generateRandomBytes() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("generateRandomBytes() = %v, want %v", got, tt.want)
 			}
 		})
 	}
