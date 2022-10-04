@@ -14,7 +14,7 @@ const (
 )
 
 type server struct {
-	server          *http.Server
+	srv             *http.Server
 	notify          chan error
 	shutdownTimeout time.Duration
 }
@@ -28,7 +28,7 @@ func New(handler http.Handler, opts ...Option) *server {
 	}
 
 	s := &server{
-		server:          httpServer,
+		srv:             httpServer,
 		notify:          make(chan error, 1),
 		shutdownTimeout: defaultShutdownTimeout,
 	}
@@ -44,7 +44,7 @@ func New(handler http.Handler, opts ...Option) *server {
 
 func (s *server) start() {
 	go func() {
-		s.notify <- s.server.ListenAndServe()
+		s.notify <- s.srv.ListenAndServe()
 		close(s.notify)
 	}()
 }
@@ -57,5 +57,5 @@ func (s *server) Shutdown() error {
 	ctx, cancel := context.WithTimeout(context.Background(), s.shutdownTimeout)
 	defer cancel()
 
-	return s.server.Shutdown(ctx)
+	return s.srv.Shutdown(ctx)
 }
