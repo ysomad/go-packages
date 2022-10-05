@@ -30,14 +30,14 @@ func generateTestResults(length int) []cursorListResult {
 func TestNewCursorList(t *testing.T) {
 	t.Parallel()
 
-	type args[T Result] struct {
-		objects  []T
+	type args[T cursorListResult] struct {
+		objects  []cursorListResult
 		pageSize uint32
 	}
 
 	type test[T Result] struct {
 		name             string
-		args             args[T]
+		args             args[cursorListResult]
 		nextPageFound    bool
 		wantResultLength int
 	}
