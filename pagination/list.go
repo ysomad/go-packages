@@ -24,26 +24,19 @@ type CursorList[T Result] struct {
 // NextPageCursor calculates from id and timestamp of the last record in objects with "," separator but only
 // if length of objects equals to amount of records requested from db.
 func NewCursorList[T Result](objects []T, pageSize uint32) *CursorList[T] {
-	var (
-		results []Result
-		cur     string
-	)
-
+	list := new(CursorList[T])
 	length := len(objects)
 
 	for i, obj := range objects {
 		if uint32(length) == pageSize+1 && i == length-1 {
-			cur = encodeCursor(obj.ID(), obj.CreatedAt())
+			list.NextPageCursor = encodeCursor(obj.ID(), obj.CreatedAt())
 			break
 		}
 
-		results = append(results, obj)
+		list.Results = append(list.Results, obj)
 	}
 
-	return &CursorList[T]{
-		Results:        results,
-		NextPageCursor: cur,
-	}
+	return list
 }
 
 // DecodeNextPageCursor is a helper method for `decodeCursor`.
