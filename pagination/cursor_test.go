@@ -14,10 +14,14 @@ var (
 	testCursor string
 )
 
+func generateTestCursor(uuid string, t time.Time) string {
+	return base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s,%s", uuid, t.Format(time.RFC3339Nano))))
+}
+
 func TestMain(m *testing.M) {
 	testUUID = "80862cb4-947a-4d64-8dbe-858fea7d84f2"
 	testTime = time.Now()
-	testCursor = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s,%s", testUUID, testTime.Format(time.RFC3339Nano))))
+	testCursor = generateTestCursor(testUUID, testTime)
 
 	os.Exit(m.Run())
 }
@@ -26,10 +30,6 @@ func Test_encodeCursor(t *testing.T) {
 	type args struct {
 		uuid string
 		t    time.Time
-	}
-
-	wantFunc := func(uuid string, t time.Time) string {
-		return base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s,%s", uuid, t.Format(time.RFC3339Nano))))
 	}
 
 	tests := []struct {
@@ -43,7 +43,7 @@ func Test_encodeCursor(t *testing.T) {
 				uuid: testUUID,
 				t:    testTime,
 			},
-			want: wantFunc(testUUID, testTime),
+			want: testCursor,
 		},
 		{
 			name: "empty uuid",
@@ -51,7 +51,7 @@ func Test_encodeCursor(t *testing.T) {
 				uuid: "",
 				t:    testTime,
 			},
-			want: wantFunc("", testTime),
+			want: generateTestCursor("", testTime),
 		},
 		{
 			name: "empty time",
@@ -59,7 +59,7 @@ func Test_encodeCursor(t *testing.T) {
 				uuid: testUUID,
 				t:    time.Time{},
 			},
-			want: wantFunc(testUUID, time.Time{}),
+			want: generateTestCursor(testUUID, time.Time{}),
 		},
 		{
 			name: "empty uuid and time",
@@ -67,7 +67,7 @@ func Test_encodeCursor(t *testing.T) {
 				uuid: "",
 				t:    time.Time{},
 			},
-			want: wantFunc("", time.Time{}),
+			want: generateTestCursor("", time.Time{}),
 		},
 	}
 
