@@ -6,20 +6,20 @@ import (
 	"time"
 )
 
-// cursorListResult implements Result
-type cursorListResult struct {
+// cursorListItem implements Result
+type cursorListItem struct {
 	id        string
 	createdAt time.Time
 }
 
-func (obj cursorListResult) ID() string           { return obj.id }
-func (obj cursorListResult) CreatedAt() time.Time { return obj.createdAt }
+func (obj cursorListItem) ID() string           { return obj.id }
+func (obj cursorListItem) CreatedAt() time.Time { return obj.createdAt }
 
-func generateTestResults(length int) []cursorListResult {
-	res := make([]cursorListResult, length)
+func generateTestItems(length int) []cursorListItem {
+	res := make([]cursorListItem, length)
 	now := time.Now()
 	for i := 0; i < length; i++ {
-		res[i] = cursorListResult{
+		res[i] = cursorListItem{
 			id:        fmt.Sprint(i),
 			createdAt: now,
 		}
@@ -28,72 +28,72 @@ func generateTestResults(length int) []cursorListResult {
 }
 
 func TestNewCursorList(t *testing.T) {
-	type args[T cursorListResult] struct {
-		objects  []cursorListResult
+	type args[T cursorListItem] struct {
+		objects  []cursorListItem
 		pageSize uint32
 	}
 
-	type test[T cursorListResult] struct {
-		name             string
-		args             args[cursorListResult]
-		nextPageFound    bool
-		wantResultLength int
+	type test[T cursorListItem] struct {
+		name           string
+		args           args[cursorListItem]
+		nextPageFound  bool
+		wantItemsCount uint32
 	}
 
-	tests := []test[cursorListResult]{
+	tests := []test[cursorListItem]{
 		{
 			name: "found 51, requested 50, next page exists",
-			args: args[cursorListResult]{
-				objects:  generateTestResults(51),
+			args: args[cursorListItem]{
+				objects:  generateTestItems(51),
 				pageSize: 50,
 			},
-			nextPageFound:    true,
-			wantResultLength: 50,
+			nextPageFound:  true,
+			wantItemsCount: 50,
 		},
 		{
 			name: "found 138, requested 137, next page exists",
-			args: args[cursorListResult]{
-				objects:  generateTestResults(138),
+			args: args[cursorListItem]{
+				objects:  generateTestItems(138),
 				pageSize: 137,
 			},
-			nextPageFound:    true,
-			wantResultLength: 137,
+			nextPageFound:  true,
+			wantItemsCount: 137,
 		},
 		{
 			name: "found 2, requested 1, next page exists",
-			args: args[cursorListResult]{
-				objects:  generateTestResults(2),
+			args: args[cursorListItem]{
+				objects:  generateTestItems(2),
 				pageSize: 1,
 			},
-			nextPageFound:    true,
-			wantResultLength: 1,
+			nextPageFound:  true,
+			wantItemsCount: 1,
 		},
 		{
 			name: "found 35, requested 100, next page doesnt exist",
-			args: args[cursorListResult]{
-				objects:  generateTestResults(35),
+			args: args[cursorListItem]{
+				objects:  generateTestItems(35),
 				pageSize: 100,
 			},
-			nextPageFound:    false,
-			wantResultLength: 35,
+			nextPageFound:  false,
+			wantItemsCount: 35,
 		},
 		{
 			name: "found 0, requested 50, next page doesnt exist",
-			args: args[cursorListResult]{
-				objects:  []cursorListResult{},
+			args: args[cursorListItem]{
+				objects:  []cursorListItem{},
 				pageSize: 50,
 			},
-			nextPageFound:    false,
-			wantResultLength: 0,
+			nextPageFound:  false,
+			wantItemsCount: 0,
 		},
 		{
 			name: "found 0, requested 0, next page doesnt exist",
-			args: args[cursorListResult]{
-				objects:  []cursorListResult{},
+			args: args[cursorListItem]{
+				objects:  []cursorListItem{},
 				pageSize: 0,
 			},
-			nextPageFound:    false,
-			wantResultLength: 0,
+			nextPageFound:  false,
+			wantItemsCount: 0,
 		},
 	}
 
@@ -101,12 +101,11 @@ func TestNewCursorList(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewCursorList(tt.args.objects, tt.args.pageSize)
 
-			resLen := len(got.Results)
-			if resLen != tt.wantResultLength {
+			if got.ItemsCount != tt.wantItemsCount {
 				t.Errorf(
-					"NewCursorList() got results length = %d, want results length = %d",
-					resLen,
-					tt.wantResultLength,
+					"NewCursorList() got.ItemsCount = %d, wantItemsCount = %d",
+					got.ItemsCount,
+					tt.wantItemsCount,
 				)
 			}
 
