@@ -9,8 +9,9 @@ import (
 )
 
 // encodeCursor encodes uuid and t into base64 string separated with ",".
-func encodeCursor(uuid string, t time.Time) string {
-	return base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s,%s", uuid, t.Format(time.RFC3339Nano))))
+func encodeCursor(oid string, t time.Time) string {
+	s := fmt.Sprintf("%s,%s", oid, t.Format(time.RFC3339Nano))
+	return base64.StdEncoding.EncodeToString([]byte(s))
 }
 
 // decodeCursor decodes page cursor into string uuid and created at time,

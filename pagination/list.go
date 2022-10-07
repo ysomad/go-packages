@@ -13,7 +13,6 @@ type Item interface {
 type CursorList[T Item] struct {
 	Items          []T
 	NextPageCursor string
-	ItemsCount     uint32
 }
 
 // NewCursorList is a constructor for CursorList.
@@ -34,24 +33,30 @@ func NewCursorList[T Item](items []T, pageSize uint32) *CursorList[T] {
 		list.Items = list.Items[:length-1]
 	}
 
-	list.ItemsCount = uint32(len(list.Items))
-
 	return list
 }
 
 // DecodeNextPageCursor is a helper method for decodeCursor.
-func (l *CursorList[T]) DecodeNextPageCursor() (uuid string, t time.Time, err error) {
+func (l *CursorList[T]) DecodeNextPageCursor() (oid string, createdAt time.Time, err error) {
 	return decodeCursor(l.NextPageCursor)
 }
 
-type OffsetList[T any] struct {
-	Items      []T
-	ItemsCount uint32
+// SeekList is a result of seek pagination.
+type SeekList[T any] struct {
+	Items   []T
+	HasNext bool
 }
 
-func NewOffsetList[T any](items []T) *OffsetList[T] {
-	return &OffsetList[T]{
-		Items:      items,
-		ItemsCount: uint32(len(items)),
+func NewSeekList[T any](items []T, pageSize uint32) *SeekList[T] {
+	length := uint32(len(items))
+	hasNext := length == pageSize+1
+
+	if hasNext {
+		items = items[:length-1]
+	}
+
+	return &SeekList[T]{
+		Items:   items,
+		HasNext: hasNext,
 	}
 }

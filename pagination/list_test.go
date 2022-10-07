@@ -6,20 +6,20 @@ import (
 	"time"
 )
 
-// cursorListItem implements Result
-type cursorListItem struct {
+// testCursorListItem implements Result
+type testCursorListItem struct {
 	id        string
 	createdAt time.Time
 }
 
-func (obj cursorListItem) ID() string           { return obj.id }
-func (obj cursorListItem) CreatedAt() time.Time { return obj.createdAt }
+func (obj testCursorListItem) ID() string           { return obj.id }
+func (obj testCursorListItem) CreatedAt() time.Time { return obj.createdAt }
 
-func generateTestItems(length int) []cursorListItem {
-	res := make([]cursorListItem, length)
+func generateTestCursorListItems(length int) []testCursorListItem {
+	res := make([]testCursorListItem, length)
 	now := time.Now()
 	for i := 0; i < length; i++ {
-		res[i] = cursorListItem{
+		res[i] = testCursorListItem{
 			id:        fmt.Sprint(i),
 			createdAt: now,
 		}
@@ -28,23 +28,23 @@ func generateTestItems(length int) []cursorListItem {
 }
 
 func TestNewCursorList(t *testing.T) {
-	type args[T cursorListItem] struct {
-		objects  []cursorListItem
+	type args[T testCursorListItem] struct {
+		objects  []testCursorListItem
 		pageSize uint32
 	}
 
-	type test[T cursorListItem] struct {
+	type test[T testCursorListItem] struct {
 		name           string
-		args           args[cursorListItem]
+		args           args[testCursorListItem]
 		nextPageFound  bool
-		wantItemsCount uint32
+		wantItemsCount int
 	}
 
-	tests := []test[cursorListItem]{
+	tests := []test[testCursorListItem]{
 		{
 			name: "found 51, requested 50, next page exists",
-			args: args[cursorListItem]{
-				objects:  generateTestItems(51),
+			args: args[testCursorListItem]{
+				objects:  generateTestCursorListItems(51),
 				pageSize: 50,
 			},
 			nextPageFound:  true,
@@ -52,8 +52,8 @@ func TestNewCursorList(t *testing.T) {
 		},
 		{
 			name: "found 138, requested 137, next page exists",
-			args: args[cursorListItem]{
-				objects:  generateTestItems(138),
+			args: args[testCursorListItem]{
+				objects:  generateTestCursorListItems(138),
 				pageSize: 137,
 			},
 			nextPageFound:  true,
@@ -61,8 +61,8 @@ func TestNewCursorList(t *testing.T) {
 		},
 		{
 			name: "found 2, requested 1, next page exists",
-			args: args[cursorListItem]{
-				objects:  generateTestItems(2),
+			args: args[testCursorListItem]{
+				objects:  generateTestCursorListItems(2),
 				pageSize: 1,
 			},
 			nextPageFound:  true,
@@ -70,8 +70,8 @@ func TestNewCursorList(t *testing.T) {
 		},
 		{
 			name: "found 35, requested 100, next page doesnt exist",
-			args: args[cursorListItem]{
-				objects:  generateTestItems(35),
+			args: args[testCursorListItem]{
+				objects:  generateTestCursorListItems(35),
 				pageSize: 100,
 			},
 			nextPageFound:  false,
@@ -79,8 +79,8 @@ func TestNewCursorList(t *testing.T) {
 		},
 		{
 			name: "found 0, requested 50, next page doesnt exist",
-			args: args[cursorListItem]{
-				objects:  []cursorListItem{},
+			args: args[testCursorListItem]{
+				objects:  []testCursorListItem{},
 				pageSize: 50,
 			},
 			nextPageFound:  false,
@@ -88,8 +88,8 @@ func TestNewCursorList(t *testing.T) {
 		},
 		{
 			name: "found 0, requested 0, next page doesnt exist",
-			args: args[cursorListItem]{
-				objects:  []cursorListItem{},
+			args: args[testCursorListItem]{
+				objects:  []testCursorListItem{},
 				pageSize: 0,
 			},
 			nextPageFound:  false,
@@ -101,10 +101,11 @@ func TestNewCursorList(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewCursorList(tt.args.objects, tt.args.pageSize)
 
-			if got.ItemsCount != tt.wantItemsCount {
+			resLen := len(got.Items)
+			if resLen != tt.wantItemsCount {
 				t.Errorf(
-					"NewCursorList() got.ItemsCount = %d, wantItemsCount = %d",
-					got.ItemsCount,
+					"NewCursorList() got items count = %d, want items count = %d",
+					resLen,
 					tt.wantItemsCount,
 				)
 			}
@@ -116,6 +117,43 @@ func TestNewCursorList(t *testing.T) {
 					tt.nextPageFound,
 				)
 			}
+		})
+	}
+}
+
+type testSeekListItem struct{}
+
+func generateTestSeekListItems(length int) []testSeekListItem {
+	res := make([]testSeekListItem, length)
+	for i := 0; i < length; i++ {
+		res[i] = testSeekListItem{}
+	}
+	return res
+}
+
+func TestNewSeekList(t *testing.T) {
+	type args struct {
+		items    []testSeekListItem
+		pageSize uint32
+	}
+
+	type test struct {
+		name           string
+		args           args
+		wantItemsCount int
+		wantHasNext    bool
+	}
+
+	tests := []test{
+		{
+			// TODO: write tests
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := NewSeekList(tt.args.items, tt.args.pageSize)
+			// TODO: handle tests
 		})
 	}
 }

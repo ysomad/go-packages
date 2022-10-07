@@ -1,6 +1,8 @@
 package pagination
 
-import "time"
+import (
+	"time"
+)
 
 // Cursor is data transfer object for cursor pagination using string as PKs.
 type Cursor struct {
@@ -9,11 +11,20 @@ type Cursor struct {
 }
 
 // DecodeNextPageCursor is a helper method for decodeCursor.
-func (c Cursor) DecodeNextPageCursor() (uuid string, t time.Time, err error) {
+func (c Cursor) DecodeNextPageCursor() (oid string, createdAt time.Time, err error) {
 	return decodeCursor(c.NextPageCursor)
 }
 
 type Offset struct {
 	Limit  uint32
 	Offset uint32
+}
+
+type oid interface {
+	~uint | ~uint32 | ~uint64
+}
+
+type Seek[T oid] struct {
+	PageSize uint32
+	LastID   T
 }
