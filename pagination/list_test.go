@@ -101,7 +101,7 @@ func TestNewCursorList(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewCursorList(tt.args.objects, tt.args.pageSize)
 
-			resLen := len(got.Objects)
+			resLen := len(got.objects)
 			if resLen != tt.wantItemsCount {
 				t.Errorf(
 					"NewCursorList() got items count = %d, want items count = %d",
@@ -110,10 +110,10 @@ func TestNewCursorList(t *testing.T) {
 				)
 			}
 
-			if (got.NextPageCursor != "") != tt.nextPageFound {
+			if (got.nextPageCursor != "") != tt.nextPageFound {
 				t.Errorf(
 					"NewCursorList() got next page cursor = %s, want next page cursor = %t",
-					got.NextPageCursor,
+					got.nextPageCursor,
 					tt.nextPageFound,
 				)
 			}

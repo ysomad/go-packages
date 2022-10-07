@@ -25,6 +25,6 @@ type OID interface {
 }
 
 type Seek[T OID] struct {
-	PageSize uint32
 	LastID   T
+	PageSize uint32
 }

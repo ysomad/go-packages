@@ -11,8 +11,8 @@ type Object interface {
 }
 
 type CursorList[T Object] struct {
-	Objects        []T
-	NextPageCursor string
+	objects        []T
+	nextPageCursor string
 }
 
 // NewCursorList is a constructor for CursorList.
@@ -25,26 +25,29 @@ type CursorList[T Object] struct {
 // if amount of items equals to amount of records requested from db.
 func NewCursorList[T Object](objects []T, pageSize uint32) *CursorList[T] {
 	length := len(objects)
-	list := &CursorList[T]{Objects: objects}
+	list := &CursorList[T]{objects: objects}
 
 	if uint32(length) == pageSize+1 {
 		lastObj := objects[length-1]
-		list.NextPageCursor = encodeCursor(lastObj.ID(), lastObj.CreatedAt())
-		list.Objects = list.Objects[:length-1]
+		list.nextPageCursor = encodeCursor(lastObj.ID(), lastObj.CreatedAt())
+		list.objects = list.objects[:length-1]
 	}
 
 	return list
 }
 
+func (l *CursorList[T]) Objects() []T           { return l.objects }
+func (l *CursorList[T]) NextPageCursor() string { return l.nextPageCursor }
+
 // DecodeNextPageCursor is a helper method for decodeCursor.
 func (l *CursorList[T]) DecodeNextPageCursor() (oid string, createdAt time.Time, err error) {
-	return decodeCursor(l.NextPageCursor)
+	return decodeCursor(l.nextPageCursor)
 }
 
 // SeekList is a result of seek pagination.
 type SeekList[T any] struct {
-	Objects []T
-	HasNext bool
+	objects []T
+	hasNext bool
 }
 
 func NewSeekList[T any](objects []T, pageSize uint32) *SeekList[T] {
@@ -56,7 +59,10 @@ func NewSeekList[T any](objects []T, pageSize uint32) *SeekList[T] {
 	}
 
 	return &SeekList[T]{
-		Objects: objects,
-		HasNext: hasNext,
+		objects: objects,
+		hasNext: hasNext,
 	}
 }
+
+func (l *SeekList[T]) Objects() []T  { return l.objects }
+func (l *SeekList[T]) HasNext() bool { return l.hasNext }
