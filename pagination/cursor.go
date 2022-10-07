@@ -16,22 +16,22 @@ func encodeCursor(oid string, t time.Time) string {
 
 // decodeCursor decodes page cursor into string uuid and created at time,
 // cursor must be a string splitted with "," and encoded into base64,
-// not decoded token example: `ef6e33ec-5b1d-4ade-8dcc-b508262ee859,`
+// not decoded token example: `ef6e33ec-5b1d-4ade-8dcc-b508262ee859,2006-01-02T15:04:05.999999999Z07:00`
 func decodeCursor(cursor string) (string, time.Time, error) {
 	b, err := base64.StdEncoding.DecodeString(cursor)
 	if err != nil {
 		return "", time.Time{}, err
 	}
 
-	items := strings.Split(string(b), ",")
-	if len(items) != 2 {
+	parts := strings.Split(string(b), ",")
+	if len(parts) != 2 {
 		return "", time.Time{}, errors.New("invalid cursor")
 	}
 
-	t, err := time.Parse(time.RFC3339Nano, items[1])
+	t, err := time.Parse(time.RFC3339Nano, parts[1])
 	if err != nil {
 		return "", time.Time{}, err
 	}
 
-	return items[0], t, nil
+	return parts[0], t, nil
 }

@@ -17,12 +17,12 @@ type CursorList[T Object] struct {
 
 // NewCursorList is a constructor for CursorList.
 //
-// items is a slice of records received from db;
+// objects is a slice of records received from db;
 // pageSize is amount of records requested from client;
 // pageSize+1 is amount of records requested from db - MUST BE used for SQL LIMIT queries.
 //
 // NextPageCursor calculates from id and timestamp of the last record in objects with "," separator but only
-// if amount of items equals to amount of records requested from db.
+// if amount of objects equals to amount of records requested from db.
 func NewCursorList[T Object](objects []T, pageSize uint32) *CursorList[T] {
 	length := len(objects)
 	list := &CursorList[T]{objects: objects}
