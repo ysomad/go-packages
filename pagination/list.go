@@ -4,14 +4,14 @@ import (
 	"time"
 )
 
-// Item is a interface which must be implemented by item from items passed into NewCursorList.
-type Item interface {
+// Object is a interface which must be implemented by object from objects arg passed into NewCursorList.
+type Object interface {
 	ID() string
 	CreatedAt() time.Time
 }
 
-type CursorList[T Item] struct {
-	Items          []T
+type CursorList[T Object] struct {
+	Objects        []T
 	NextPageCursor string
 }
 
@@ -23,14 +23,14 @@ type CursorList[T Item] struct {
 //
 // NextPageCursor calculates from id and timestamp of the last record in objects with "," separator but only
 // if amount of items equals to amount of records requested from db.
-func NewCursorList[T Item](items []T, pageSize uint32) *CursorList[T] {
-	length := len(items)
-	list := &CursorList[T]{Items: items}
+func NewCursorList[T Object](objects []T, pageSize uint32) *CursorList[T] {
+	length := len(objects)
+	list := &CursorList[T]{Objects: objects}
 
 	if uint32(length) == pageSize+1 {
-		lastItem := items[length-1]
-		list.NextPageCursor = encodeCursor(lastItem.ID(), lastItem.CreatedAt())
-		list.Items = list.Items[:length-1]
+		lastObj := objects[length-1]
+		list.NextPageCursor = encodeCursor(lastObj.ID(), lastObj.CreatedAt())
+		list.Objects = list.Objects[:length-1]
 	}
 
 	return list
@@ -43,20 +43,20 @@ func (l *CursorList[T]) DecodeNextPageCursor() (oid string, createdAt time.Time,
 
 // SeekList is a result of seek pagination.
 type SeekList[T any] struct {
-	Items   []T
+	Objects []T
 	HasNext bool
 }
 
-func NewSeekList[T any](items []T, pageSize uint32) *SeekList[T] {
-	length := uint32(len(items))
+func NewSeekList[T any](objects []T, pageSize uint32) *SeekList[T] {
+	length := uint32(len(objects))
 	hasNext := length == pageSize+1
 
 	if hasNext {
-		items = items[:length-1]
+		objects = objects[:length-1]
 	}
 
 	return &SeekList[T]{
-		Items:   items,
+		Objects: objects,
 		HasNext: hasNext,
 	}
 }

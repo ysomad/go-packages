@@ -20,11 +20,11 @@ type Offset struct {
 	Offset uint32
 }
 
-type oid interface {
+type OID interface {
 	~uint | ~uint32 | ~uint64
 }
 
-type Seek[T oid] struct {
+type Seek[T OID] struct {
 	PageSize uint32
 	LastID   T
 }

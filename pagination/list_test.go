@@ -101,7 +101,7 @@ func TestNewCursorList(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewCursorList(tt.args.objects, tt.args.pageSize)
 
-			resLen := len(got.Items)
+			resLen := len(got.Objects)
 			if resLen != tt.wantItemsCount {
 				t.Errorf(
 					"NewCursorList() got items count = %d, want items count = %d",
